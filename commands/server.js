@@ -8,6 +8,19 @@ const socketProxy = require('../lib/socket-proxy.js');
 const map = {};
 
 const handler = (argv) => {
+  const getPort = (() => {
+    let nextPort = argv.f;
+    const max = argv.t;
+
+    return () => {
+      if (nextPort === max) {
+        throw new Error('no more free ports');
+      }
+
+      return nextPort++;
+    };
+  })();
+
   http.createServer(async (req, res) => {
     if (req.method !== 'POST' || !/^\/register\/?$/.test(req.url)) {
       res.writeHead(404);
@@ -15,34 +28,20 @@ const handler = (argv) => {
       return;
     }
 
-    const getPort = (() => {
-      let port = argv.f;
-      const max = argv.t;
-
-      return () => {
-        if (port === max) {
-          throw new Error('no more free ports');
-        }
-
-        return port++;
-      };
-    })();
-
     try {
       const reqBuffer = await (new Response(req)).buffer();
-      const { name, type, address } = JSON.parse(reqBuffer.toString());
+      const { name, type } = JSON.parse(reqBuffer.toString());
 
       map[name] = map[name] || {};
-      map[name][type] = address;
-      map[name].port = map[name].port || getPort();
+      map[name][type] = map[name][type] || getPort();
 
       if (map[name].agent && map[name].client) {
-        socketProxy(`localhost:${map[name].port}`, map[name].client);
-        console.log(`named tunnel "${name}" started on ${map[name].port}`);
+        socketProxy(`localhost:${map[name].agent}`, map[name].client);
+        console.log(`${name} --- localhost:${map[name][type]} -> ${map[name].client}`);
       }
 
       res.writeHead(200, { 'content-type': 'application/json' });
-      res.end(JSON.stringify({ port: map[name].port }));
+      res.end(JSON.stringify({ port: map[name][type] }));
     } catch (e) {
       res.writeHead(500);
       res.end(e.toString());
