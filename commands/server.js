@@ -37,7 +37,7 @@ const handler = (argv) => {
 
       if (map[name].agent && map[name].client) {
         socketProxy(`localhost:${map[name].agent}`, map[name].client);
-        console.log(`${name} --- localhost:${map[name][type]} -> ${map[name].client}`);
+        console.log(`${name} --- localhost:${map[name].agent} -> ${map[name].client}`);
       }
 
       res.writeHead(200, { 'content-type': 'application/json' });
