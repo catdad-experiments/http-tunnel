@@ -1,0 +1,27 @@
+{
+  "name": "http-tunnel",
+  "version": "1.0.0",
+  "description": "http-tunnel",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/catdad-experiments/http-tunnel.git"
+  },
+  "keywords": [],
+  "author": "Kiril Vatev <vatev.1@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/catdad-experiments/http-tunnel/issues"
+  },
+  "homepage": "https://github.com/catdad-experiments/http-tunnel#readme",
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "yargs": "^13.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
+  }
+}
